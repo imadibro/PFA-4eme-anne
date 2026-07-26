@@ -1,4 +1,4 @@
 export enum TypePack {
-  TRANSPORT_SEUL = 'TRANSPORT_SEUL',
-  PACK_COMPLET = 'PACK_COMPLET',
+  SIMPLE = 'SIMPLE',
+  COMPLET = 'COMPLET'
 }
