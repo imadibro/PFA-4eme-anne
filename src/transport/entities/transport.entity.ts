@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AgenceVoyage } from '../../agence-voyage/entities/agence-voyage.entity';
 import { TypeTransport } from '../../common/enums';
 
-@Entity()
+@Entity('transports')
 export class Transport {
   @PrimaryGeneratedColumn()
   id: number;

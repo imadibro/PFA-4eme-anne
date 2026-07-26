@@ -1,15 +1,19 @@
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Prestataire } from '../../prestataire/entities/prestataire.entity';
 
-@Entity()
+// guide.entity.ts
+@Entity('guides')
 export class Guide {
-  @OneToOne(() => Prestataire, { eager: true })
-  @JoinColumn()
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @OneToOne(() => Prestataire, { eager: true, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'prestataire_id' })
   prestataire: Prestataire;
 
-  @Column('simple-array')
+  @Column('simple-array', { name: 'list_langues' })
   listLangues: string[];
 
-  @Column({ type: 'double precision' })
+  @Column({ name: 'tarif_jrs', type: 'double precision' })
   tarifJrs: number;
 }
