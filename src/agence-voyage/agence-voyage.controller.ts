@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AgenceVoyageService } from './agence-voyage.service';
 import { AgenceVoyage } from './entities/agence-voyage.entity';
 
@@ -17,7 +17,7 @@ export class AgenceVoyageController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  remove(@Param('id') id: string): Promise<void> {
     return this.agenceVoyageService.remove(id);
   }
 }

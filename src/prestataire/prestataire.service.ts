@@ -7,14 +7,14 @@ import { Prestataire } from './entities/prestataire.entity';
 export class PrestataireService {
   constructor(
     @InjectRepository(Prestataire)
-    private readonly prestataireRepository: Repository<Prestataire>,
+    private readonly prestataireRepository: Repository<Prestataire>
   ) {}
 
   findAll(): Promise<Prestataire[]> {
     return this.prestataireRepository.find();
   }
 
-  findOne(id: number): Promise<Prestataire | null> {
+  findOne(id: string): Promise<Prestataire | null> {
     return this.prestataireRepository.findOneBy({ id });
   }
 
@@ -23,12 +23,12 @@ export class PrestataireService {
     return this.prestataireRepository.save(newPrestataire);
   }
 
-  async update(id: number, prestataire: Partial<Prestataire>): Promise<Prestataire | null> {
+  async update(id: string, prestataire: Partial<Prestataire>): Promise<Prestataire | null> {
     await this.prestataireRepository.update(id, prestataire);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.prestataireRepository.delete(id);
   }
 }

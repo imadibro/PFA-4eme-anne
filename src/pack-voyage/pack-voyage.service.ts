@@ -7,11 +7,11 @@ import { PackVoyage } from './entities/pack-voyage.entity';
 export class PackVoyageService {
   constructor(
     @InjectRepository(PackVoyage)
-    private readonly packVoyageRepository: Repository<PackVoyage>,
+    private readonly packVoyageRepository: Repository<PackVoyage>
   ) {}
 
   findAll(): Promise<PackVoyage[]> {
-    return this.packVoyageRepository.find({ relations: ['guides', 'circuit'] });
+    return this.packVoyageRepository.find({ relations: { guides: true, circuit: true } });
   }
 
   findOne(id: number): Promise<PackVoyage | null> {

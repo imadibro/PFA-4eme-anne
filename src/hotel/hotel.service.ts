@@ -7,11 +7,11 @@ import { Hotel } from './entities/hotel.entity';
 export class HotelService {
   constructor(
     @InjectRepository(Hotel)
-    private readonly hotelRepository: Repository<Hotel>,
+    private readonly hotelRepository: Repository<Hotel>
   ) {}
 
   findAll(): Promise<Hotel[]> {
-    return this.hotelRepository.find({ relations: ['chambres'] });
+    return this.hotelRepository.find({ relations: { chambres: true } });
   }
 
   create(hotel: Partial<Hotel>): Promise<Hotel> {

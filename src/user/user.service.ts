@@ -7,14 +7,14 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>
   ) {}
 
   findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  findOne(id: number): Promise<User | null> {
+  findOne(id: string): Promise<User | null> {
     return this.userRepository.findOneBy({ id });
   }
 
@@ -27,12 +27,12 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
 
-  async update(id: number, user: Partial<User>): Promise<User | null> {
+  async update(id: string, user: Partial<User>): Promise<User | null> {
     await this.userRepository.update(id, user);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.userRepository.delete(id);
   }
 }

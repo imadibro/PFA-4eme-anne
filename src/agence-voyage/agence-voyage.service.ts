@@ -7,11 +7,11 @@ import { AgenceVoyage } from './entities/agence-voyage.entity';
 export class AgenceVoyageService {
   constructor(
     @InjectRepository(AgenceVoyage)
-    private readonly agenceVoyageRepository: Repository<AgenceVoyage>,
+    private readonly agenceVoyageRepository: Repository<AgenceVoyage>
   ) {}
 
   findAll(): Promise<AgenceVoyage[]> {
-    return this.agenceVoyageRepository.find({ relations: ['packs'] });
+    return this.agenceVoyageRepository.find({ relations: { packs: true } });
   }
 
   create(agenceVoyage: Partial<AgenceVoyage>): Promise<AgenceVoyage> {
@@ -19,7 +19,7 @@ export class AgenceVoyageService {
     return this.agenceVoyageRepository.save(newAgence);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.agenceVoyageRepository.delete(id);
   }
 }

@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { PrestataireService } from './prestataire.service';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { Prestataire } from './entities/prestataire.entity';
+import { PrestataireService } from './prestataire.service';
 
 @Controller('prestataires')
 export class PrestataireController {
@@ -12,7 +12,7 @@ export class PrestataireController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Prestataire | null> {
+  findOne(@Param('id') id: string): Promise<Prestataire | null> {
     return this.prestataireService.findOne(id);
   }
 
@@ -22,12 +22,12 @@ export class PrestataireController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() prestataire: Partial<Prestataire>): Promise<Prestataire | null> {
+  update(@Param('id') id: string, @Body() prestataire: Partial<Prestataire>): Promise<Prestataire | null> {
     return this.prestataireService.update(id, prestataire);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  remove(@Param('id') id: string): Promise<void> {
     return this.prestataireService.remove(id);
   }
 }

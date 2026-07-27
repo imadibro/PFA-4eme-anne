@@ -32,13 +32,13 @@ export abstract class User {
   @Column({ name: 'user_role', type: 'enum', enum: UserRole, default: UserRole.TOURISTE })
   userRole: UserRole;
 
-  @Column({ name: 'refresh_token', nullable: true, select: false })
+  @Column({ name: 'refresh_token', type: 'varchar', nullable: true, select: false })
   refreshToken: string | null;
 
   @Column({ name: 'gender', type: 'enum', enum: GENDERS, default: GENDERS.FEMALE })
   gender: string;
 
-    @Column({ name: 'is_active', default: true })
+  @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
   @Column({ name: 'profile_image', nullable: true, default: null })
@@ -60,5 +60,4 @@ export abstract class User {
   async validatePassword(password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.hashPassword);
   }
-
 }
