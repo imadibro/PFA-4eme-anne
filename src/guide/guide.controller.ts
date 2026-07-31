@@ -1,23 +1,59 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  Query
+} from '@nestjs/common';
+import { FindAllQuryParams } from 'src/common/payload/findAllQuryParams';
+import { GuideDto } from './dto/guide.dto';
 import { GuideService } from './guide.service';
-import { Guide } from './entities/guide.entity';
+import { CreateGuidePayload } from './payload/create-guide.payload';
+import { UpdateGuidePayload } from './payload/update-guide.payload';
 
 @Controller('guides')
 export class GuideController {
   constructor(private readonly guideService: GuideService) {}
 
   @Get()
-  findAll(): Promise<Guide[]> {
-    return this.guideService.findAll();
+  async findAll(
+    @Query() query: FindAllQuryParams
+  ): Promise<{ guides: GuideDto[]; total: number; page: number; totalPages: number }> {
+    let { page, limit, search } = query;
+    page = page ?? 1;
+    limit = limit ?? 10;
+    limit = Math.min(limit);
+    return this.guideService.findAll(page, limit, search);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GuideDto> {
+    return this.guideService.findOne(id);
   }
 
   @Post()
-  create(@Body() guide: Partial<Guide>): Promise<Guide> {
-    return this.guideService.create(guide);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createGuidePayload: CreateGuidePayload): Promise<GuideDto> {
+    return this.guideService.create(createGuidePayload);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateGuidePayload: UpdateGuidePayload
+  ): Promise<GuideDto> {
+    return this.guideService.update(id, updateGuidePayload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.guideService.remove(id);
   }
 }

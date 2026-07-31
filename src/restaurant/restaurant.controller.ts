@@ -1,23 +1,56 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  Query
+} from '@nestjs/common';
+import { RestaurantDto } from './dto/restaurant.dto';
+import { CreateRestaurantPayload } from './payload/create-restaurant.payload';
+import { UpdateRestaurantPayload } from './payload/update-restaurant.payload';
 import { RestaurantService } from './restaurant.service';
-import { Restaurant } from './entities/restaurant.entity';
 
 @Controller('restaurants')
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Get()
-  findAll(): Promise<Restaurant[]> {
-    return this.restaurantService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('search') search?: string
+  ): Promise<{ restaurants: RestaurantDto[]; total: number; page: number; totalPages: number }> {
+    return this.restaurantService.findAll(Number(page), Number(limit), search);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<RestaurantDto> {
+    return this.restaurantService.findOne(id);
   }
 
   @Post()
-  create(@Body() restaurant: Partial<Restaurant>): Promise<Restaurant> {
-    return this.restaurantService.create(restaurant);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createRestaurantPayload: CreateRestaurantPayload): Promise<RestaurantDto> {
+    return this.restaurantService.create(createRestaurantPayload);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRestaurantPayload: UpdateRestaurantPayload
+  ): Promise<RestaurantDto> {
+    return this.restaurantService.update(id, updateRestaurantPayload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.restaurantService.remove(id);
   }
 }
