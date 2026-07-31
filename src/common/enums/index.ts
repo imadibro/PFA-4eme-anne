@@ -1,3 +1,4 @@
+export * from './ItemsPerPage';
 export * from './role.enum';
 export * from './statut-reservation.enum';
 export * from './type-chambre.enum';

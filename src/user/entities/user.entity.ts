@@ -1,9 +1,10 @@
 import * as bcrypt from 'bcrypt';
 import { CURRENT_TIMESTAMP } from 'src/common/constants/constant';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 import { GENDERS, UserRole } from '../../common/enums';
 
 @Entity('users')
+@Unique(['email', 'username'])
 export abstract class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
