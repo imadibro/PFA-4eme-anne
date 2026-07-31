@@ -13,8 +13,9 @@ import {
 import express from 'express';
 import { JwtAuthGuard } from 'src/common';
 import { CurrentUser, Public } from 'src/common/decorators';
-import type { JWTPayloadType } from 'src/common/type/type';
+import type { AccessTokenType, JWTPayloadType } from 'src/common/type/type';
 import { LoginDto } from '../dto/login.dto';
+import { CreateUserPayload } from '../payload';
 import { AuthService } from '../services/auth.service';
 
 @Controller('user/auth')
@@ -22,6 +23,14 @@ export class AuthController {
   logger = new Logger(AuthController.name);
 
   constructor(private readonly authService: AuthService) {}
+
+  // add registre methode to create new user
+  @Post('register')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  async register(@Body() registerPayload: CreateUserPayload): Promise<AccessTokenType> {
+    return this.authService.register(registerPayload);
+  }
 
   @Post('login')
   @Public()

@@ -1,12 +1,13 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import type { JWTPayloadType } from 'src/common';
+import type { AccessTokenType, JWTPayloadType } from 'src/common';
 import { Repository } from 'typeorm';
 import { LoginDto } from '../dto/login.dto';
 import { User } from '../entities/user.entity';
+import { CreateUserPayload } from '../payload';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,49 @@ export class AuthService {
     private jwtService: JwtService,
     private readonly configService: ConfigService
   ) {}
+
+  async register(registerDto: CreateUserPayload): Promise<AccessTokenType> {
+    const existingUserByEmail = await this.userRepository.findOneBy({ email: registerDto.email });
+
+    if (existingUserByEmail) {
+      throw new BadRequestException('Un utilisateur avec cet email existe déjà');
+    }
+
+    const existingUserByUsername = await this.userRepository.findOneBy({ username: registerDto.username });
+
+    if (existingUserByUsername) {
+      throw new BadRequestException("Un utilisateur avec ce nom d'utilisateur existe déjà");
+    }
+
+    const hashedPassword = await this.hashPassword(registerDto.password);
+
+    const newUser = this.userRepository.create({
+      firstName: registerDto.firstName,
+      lastName: registerDto.lastName,
+      gender: registerDto.gender,
+      phone: registerDto.phone,
+      email: registerDto.email,
+      password: hashedPassword,
+      username: registerDto.username,
+      ...(registerDto.profileImage && { profileImage: registerDto.profileImage }),
+      ...(registerDto.isActive !== undefined && { isActive: registerDto.isActive === 'true' }),
+      ...(registerDto.isAccountVerified !== undefined && {
+        isAccountVerified: registerDto.isAccountVerified === 'true'
+      }),
+      ...(registerDto.userRole && { userRole: registerDto.userRole as any })
+    });
+
+    const savedUser = await this.userRepository.save(newUser);
+    this.logger.log(`Nouvel utilisateur créé avec succès: ${savedUser.username}`);
+
+    const payload: JWTPayloadType = {
+      id: savedUser.id,
+      username: savedUser.username,
+      userRole: savedUser.userRole
+    };
+    const accessToken = await this.generateJwt(payload);
+    return { accessToken };
+  }
 
   async login(loginDto: LoginDto): Promise<{ accessToken: string; refreshToken: string }> {
     const { username, password } = loginDto;
@@ -93,5 +137,10 @@ export class AuthService {
     await this.userRepository.update(userId, {
       refreshToken: hashed
     });
+  }
+
+  public async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
   }
 }

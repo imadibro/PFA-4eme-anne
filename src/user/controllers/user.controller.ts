@@ -25,6 +25,13 @@ export class UserController {
   private readonly logger = new Logger(UserController.name);
   constructor(private readonly userService: UserService) {}
 
+  @Post()
+  @HttpCode(201)
+  @UseGuards(JwtAuthGuard)
+  create(@Body() user: Partial<User>): Promise<UserDto> {
+    return this.userService.create(user);
+  }
+
   @Get()
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
@@ -54,13 +61,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string): Promise<UserDto | null> {
     return this.userService.findOne(id);
-  }
-
-  @Post()
-  @HttpCode(201)
-  @UseGuards(JwtAuthGuard)
-  create(@Body() user: Partial<User>): Promise<UserDto> {
-    return this.userService.create(user);
   }
 
   @Put(':id')

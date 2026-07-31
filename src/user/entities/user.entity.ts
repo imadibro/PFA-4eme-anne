@@ -24,9 +24,6 @@ export abstract class User {
   @Column({ name: 'password', length: 255, nullable: false })
   password: string;
 
-  @Column({ name: 'hash_password', length: 255, nullable: false })
-  hashPassword: string;
-
   @Column({ name: 'phone', length: 20, nullable: false })
   phone: string;
 
@@ -58,7 +55,7 @@ export abstract class User {
   })
   updatedAt: Date;
 
-  async validatePassword(password: string): Promise<boolean> {
-    return await bcrypt.compare(password, this.hashPassword);
+  async validatePassword(plainPassword: string): Promise<boolean> {
+    return await bcrypt.compare(plainPassword, this.password);
   }
 }

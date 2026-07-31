@@ -3,3 +3,7 @@ export type JWTPayloadType = {
   username: string;
   userRole: string;
 };
+
+export type AccessTokenType = {
+  accessToken: string;
+};
