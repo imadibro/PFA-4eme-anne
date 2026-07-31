@@ -1,6 +1,4 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemsPerPage } from 'src/common';
 import { Repository } from 'typeorm';
@@ -12,9 +10,7 @@ export class UserService {
   private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly userRepository: Repository<User>
   ) {}
 
   async getCurrentUser(id: string): Promise<UserDto> {
