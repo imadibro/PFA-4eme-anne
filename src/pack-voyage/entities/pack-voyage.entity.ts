@@ -32,6 +32,7 @@ export class PackVoyage {
 
   @Column({ type: 'enum', enum: TypePack })
   typePack: TypePack;
+
   @ManyToOne(() => AgenceVoyage, agence => agence.packs)
   agenceVoyage: AgenceVoyage;
 

@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateUserPayload {
   @IsNotEmpty({ message: 'Le prénom est requis.' })
@@ -39,13 +39,13 @@ export class CreateUserPayload {
   @IsString({ message: 'Le genre doit être une chaîne de caractères.' })
   gender: string;
 
-  @IsString({ message: "L'état actif doit être une chaîne de caractères." })
+  @IsBoolean({ message: "L'état actif doit être un booléen." })
   @IsOptional()
-  isActive?: string;
+  isActive?: boolean;
 
-  @IsString({ message: 'La vérification du compte doit être une chaîne de caractères.' })
+  @IsBoolean({ message: 'La vérification du compte doit être un booléen.' })
   @IsOptional()
-  isAccountVerified?: string;
+  isAccountVerified?: boolean;
 
   @IsString({ message: "L'image de profil doit être une chaîne de caractères." })
   @IsOptional()

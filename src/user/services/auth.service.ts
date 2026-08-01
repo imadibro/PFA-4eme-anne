@@ -33,6 +33,12 @@ export class AuthService {
     }
 
     const hashedPassword = await this.hashPassword(registerDto.password);
+    const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${registerDto.username}`;
+    const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${registerDto.username}`;
+
+    const defaultProfileImage = registerDto.gender === 'male' ? boyProfilePic : girlProfilePic;
+    const userRole = registerDto.userRole || 'TOURISTE';
+    const isAccountVerified = userRole === 'TOURISTE' ? true : false;
 
     const newUser = this.userRepository.create({
       firstName: registerDto.firstName,
@@ -42,12 +48,10 @@ export class AuthService {
       email: registerDto.email,
       password: hashedPassword,
       username: registerDto.username,
-      ...(registerDto.profileImage && { profileImage: registerDto.profileImage }),
-      ...(registerDto.isActive !== undefined && { isActive: registerDto.isActive === 'true' }),
-      ...(registerDto.isAccountVerified !== undefined && {
-        isAccountVerified: registerDto.isAccountVerified === 'true'
-      }),
-      ...(registerDto.userRole && { userRole: registerDto.userRole as any })
+      profileImage: registerDto.profileImage || defaultProfileImage,
+      isActive: true,
+      isAccountVerified: isAccountVerified,
+      userRole: userRole as any
     });
 
     const savedUser = await this.userRepository.save(newUser);

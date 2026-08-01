@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 import express from 'express';
 import { JwtAuthGuard } from 'src/common';
-import { CurrentUser, Public } from 'src/common/decorators';
+import { CurrentUser } from 'src/common/decorators';
+import { Public } from 'src/common/guards/public-route.decorator';
 import type { AccessTokenType, JWTPayloadType } from 'src/common/type/type';
 import { LoginDto } from '../dto/login.dto';
 import { CreateUserPayload } from '../payload';

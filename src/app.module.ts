@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AgenceVoyageModule } from './agence-voyage/agence-voyage.module';
 import { AvisModule } from './avis/avis.module';
 import { ChambreModule } from './chambre/chambre.module';
 import { CircuitModule } from './circuit/circuit.module';
+import { JwtAuthGuard, RolesGuard } from './common';
 import { appConfig, databaseConfig, jwtConfig } from './config';
 import { GuideModule } from './guide/guide.module';
 import { HotelModule } from './hotel/hotel.module';
@@ -20,7 +22,7 @@ import { UserModule } from './user/user.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, jwtConfig, appConfig],
+      load: [databaseConfig, jwtConfig, appConfig]
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -33,8 +35,8 @@ import { UserModule } from './user/user.module';
         database: config.get<string>('database.database'),
         synchronize: config.get<boolean>('database.synchronize'),
         logging: config.get<boolean>('database.logging'),
-        autoLoadEntities: config.get<boolean>('database.autoLoadEntities'),
-      }),
+        autoLoadEntities: config.get<boolean>('database.autoLoadEntities')
+      })
     }),
     UserModule,
     TouristeModule,
@@ -48,9 +50,18 @@ import { UserModule } from './user/user.module';
     AgenceVoyageModule,
     PackVoyageModule,
     TransportModule,
-    CircuitModule,
+    CircuitModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard
+    }
+  ]
 })
 export class AppModule {}
