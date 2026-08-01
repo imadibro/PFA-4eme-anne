@@ -1,28 +1,59 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query
+} from '@nestjs/common';
+import { FindAllQuryParams } from 'src/common/payload/findAllQuryParams';
 import { CircuitService } from './circuit.service';
-import { Circuit } from './entities/circuit.entity';
+import { CircuitDto } from './dto/circuit.dto';
+import { CreateCircuitPayload } from './payload/create-circuit.payload';
+import { UpdateCircuitPayload } from './payload/update-circuit.payload';
 
 @Controller('circuits')
 export class CircuitController {
   constructor(private readonly circuitService: CircuitService) {}
 
   @Get()
-  findAll(): Promise<Circuit[]> {
-    return this.circuitService.findAll();
+  async findAll(
+    @Query() query: FindAllQuryParams
+  ): Promise<{ circuits: CircuitDto[]; total: number; page: number; totalPages: number }> {
+    let { page, limit, search } = query;
+    page = page ?? 1;
+    limit = limit ?? 10;
+    limit = Math.min(limit);
+    return this.circuitService.findAll(page, limit, search);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Circuit | null> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<CircuitDto> {
     return this.circuitService.findOne(id);
   }
 
   @Post()
-  create(@Body() circuit: Partial<Circuit>): Promise<Circuit> {
-    return this.circuitService.create(circuit);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createCircuitPayload: CreateCircuitPayload): Promise<CircuitDto> {
+    return this.circuitService.create(createCircuitPayload);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCircuitPayload: UpdateCircuitPayload
+  ): Promise<CircuitDto> {
+    return this.circuitService.update(id, updateCircuitPayload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.circuitService.remove(id);
   }
 }

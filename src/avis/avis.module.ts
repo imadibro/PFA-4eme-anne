@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Avis } from './entities/avis.entity';
-import { AvisService } from './avis.service';
+import { Prestataire } from '../prestataire/entities/prestataire.entity';
+import { Touriste } from '../touriste/entities/touriste.entity';
 import { AvisController } from './avis.controller';
+import { AvisService } from './avis.service';
+import { Avis } from './entities/avis.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Avis])],
+  imports: [TypeOrmModule.forFeature([Avis, Touriste, Prestataire])],
   controllers: [AvisController],
   providers: [AvisService],
-  exports: [AvisService],
+  exports: [AvisService]
 })
 export class AvisModule {}

@@ -1,28 +1,59 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query
+} from '@nestjs/common';
+import { FindAllQuryParams } from 'src/common/payload/findAllQuryParams';
+import { PackVoyageDto } from './dto/pack-voyage.dto';
 import { PackVoyageService } from './pack-voyage.service';
-import { PackVoyage } from './entities/pack-voyage.entity';
+import { CreatePackVoyagePayload } from './payload/create-pack-voyage.payload';
+import { UpdatePackVoyagePayload } from './payload/update-pack-voyage.payload';
 
 @Controller('packs-voyage')
 export class PackVoyageController {
   constructor(private readonly packVoyageService: PackVoyageService) {}
 
   @Get()
-  findAll(): Promise<PackVoyage[]> {
-    return this.packVoyageService.findAll();
+  async findAll(
+    @Query() query: FindAllQuryParams
+  ): Promise<{ packs: PackVoyageDto[]; total: number; page: number; totalPages: number }> {
+    let { page, limit, search } = query;
+    page = page ?? 1;
+    limit = limit ?? 10;
+    limit = Math.min(limit);
+    return this.packVoyageService.findAll(page, limit, search);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<PackVoyage | null> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PackVoyageDto> {
     return this.packVoyageService.findOne(id);
   }
 
   @Post()
-  create(@Body() packVoyage: Partial<PackVoyage>): Promise<PackVoyage> {
-    return this.packVoyageService.create(packVoyage);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createPackVoyagePayload: CreatePackVoyagePayload): Promise<PackVoyageDto> {
+    return this.packVoyageService.create(createPackVoyagePayload);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePackVoyagePayload: UpdatePackVoyagePayload
+  ): Promise<PackVoyageDto> {
+    return this.packVoyageService.update(id, updatePackVoyagePayload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.packVoyageService.remove(id);
   }
 }
