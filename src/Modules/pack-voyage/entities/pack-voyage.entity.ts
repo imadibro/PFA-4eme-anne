@@ -1,6 +1,3 @@
-import { Hotel } from 'src/hotel/entities/hotel.entity';
-import { Restaurant } from 'src/Modules/restaurant/entities/restaurant.entity';
-import { Transport } from 'src/transport/entities/transport.entity';
 import {
   Column,
   Entity,
@@ -11,10 +8,13 @@ import {
   OneToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
+import { TypePack } from '../../../common/enums/index';
 import { AgenceVoyage } from '../../agence-voyage/entities/agence-voyage.entity';
 import { Circuit } from '../../circuit/entities/circuit.entity';
-import { TypePack } from '../../common/enums';
-import { Guide } from '../../Modules/guide/entities/guide.entity';
+import { Guide } from '../../guide/entities/guide.entity';
+import { Hotel } from '../../hotel/entities/hotel.entity';
+import { Restaurant } from '../../restaurant/entities/restaurant.entity';
+import { Transport } from '../../transport/entities/transport.entity';
 
 @Entity()
 export class PackVoyage {

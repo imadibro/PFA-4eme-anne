@@ -2,21 +2,21 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ChambreModule } from './chambre/chambre.module';
 import { JwtAuthGuard, RolesGuard } from './common';
 import { appConfig, databaseConfig, jwtConfig } from './config';
-import { GuideModule } from './guide/guide.module';
-import { HotelModule } from './hotel/hotel.module';
 import { AgenceVoyageModule } from './Modules/agence-voyage/agence-voyage.module';
 import { AvisModule } from './Modules/avis/avis.module';
+import { ChambreModule } from './Modules/chambre/chambre.module';
 import { CircuitModule } from './Modules/circuit/circuit.module';
+import { GuideModule } from './Modules/guide/guide.module';
+import { HotelModule } from './Modules/hotel/hotel.module';
+import { PackVoyageModule } from './Modules/pack-voyage/pack-voyage.module';
+import { PrestataireModule } from './Modules/prestataire/prestataire.module';
+import { ReservationModule } from './Modules/reservation/reservation.module';
 import { RestaurantModule } from './Modules/restaurant/restaurant.module';
-import { PackVoyageModule } from './pack-voyage/pack-voyage.module';
-import { PrestataireModule } from './prestataire/prestataire.module';
-import { ReservationModule } from './reservation/reservation.module';
-import { TouristeModule } from './touriste/touriste.module';
-import { TransportModule } from './transport/transport.module';
-import { UserModule } from './user/user.module';
+import { TouristeModule } from './Modules/touriste/touriste.module';
+import { TransportModule } from './Modules/transport/transport.module';
+import { UserModule } from './Modules/user/user.module';
 
 @Module({
   imports: [
