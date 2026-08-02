@@ -9,11 +9,11 @@ export enum SortOrder {
 export class PaginationPayload {
   @Transform(({ value }) => Number(value))
   @IsNumber({}, { message: ' "page" atrribute should be a number' })
-  public page: number;
+  public page!: number;
 
   @Transform(({ value }) => Number(value))
   @IsNumber({}, { message: ' "limit" attribute should be a number ' })
-  public limit: number;
+  public limit!: number;
 
   @IsOptional()
   public orderBy?: string;
