@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtAuthGuard, RolesGuard } from './common';
 import { appConfig, databaseConfig, jwtConfig } from './config';
 import { AgenceVoyageModule } from './Modules/agence-voyage/agence-voyage.module';
+import { AuthModule } from './Modules/auth/auth.module';
 import { AvisModule } from './Modules/avis/avis.module';
 import { ChambreModule } from './Modules/chambre/chambre.module';
 import { CircuitModule } from './Modules/circuit/circuit.module';
@@ -38,6 +39,7 @@ import { UserModule } from './Modules/user/user.module';
         autoLoadEntities: config.get<boolean>('database.autoLoadEntities')
       })
     }),
+    AuthModule,
     UserModule,
     TouristeModule,
     PrestataireModule,
