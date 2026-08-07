@@ -255,4 +255,49 @@ export class ReservationService {
       throw new InternalServerErrorException('Échec de la suppression de la réservation');
     }
   }
+
+  async findByTouristeUserId(userId: string, page: number, limit: number): Promise<PaginatedResult<ReservationDto>> {
+    try {
+      const validLimit = Object.values(ItemsPerPage).includes(limit) ? limit : ItemsPerPage.Ten;
+
+      const queryBuilder = this.reservationRepository
+        .createQueryBuilder('reservation')
+        .leftJoinAndSelect('reservation.touriste', 'touriste')
+        .leftJoinAndSelect('touriste.user', 'touristeUser')
+        .leftJoinAndSelect('reservation.prestataire', 'prestataire')
+        .leftJoinAndSelect('prestataire.user', 'prestataireUser')
+        .leftJoinAndSelect('reservation.chambre', 'chambre')
+        .leftJoinAndSelect('reservation.transport', 'transport')
+        .leftJoinAndSelect('reservation.packVoyage', 'packVoyage')
+        .where('touristeUser.id = :userId', { userId });
+
+      const [reservations, total] = await queryBuilder
+        .skip((page - 1) * validLimit)
+        .take(validLimit)
+        .orderBy('reservation.id', 'DESC')
+        .getManyAndCount();
+
+      const reservationResponse = reservations.map(reservation => new ReservationDto(reservation));
+      const totalPages = Math.ceil(total / validLimit);
+
+      return { data: reservationResponse, total, page, limit: validLimit, totalPages };
+    } catch (error) {
+      this.logger.error('Erreur lors de la récupération des réservations du touriste', error);
+      throw new InternalServerErrorException('Échec de la récupération des réservations');
+    }
+  }
+
+  async hasTouristeReservedPrestataire(touristeUserId: string, prestataireId: string): Promise<boolean> {
+    const reservation = await this.reservationRepository
+      .createQueryBuilder('reservation')
+      .leftJoin('reservation.touriste', 'touriste')
+      .leftJoin('touriste.user', 'touristeUser')
+      .leftJoin('reservation.prestataire', 'prestataire')
+      .where('touristeUser.id = :touristeUserId', { touristeUserId })
+      .andWhere('prestataire.id = :prestataireId', { prestataireId })
+      .andWhere('reservation.statut = :statut', { statut: 'CONFIRMEE' })
+      .getOne();
+
+    return !!reservation;
+  }
 }

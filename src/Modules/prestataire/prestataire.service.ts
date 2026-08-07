@@ -166,4 +166,30 @@ export class PrestataireService {
       throw new InternalServerErrorException('Échec de la suppression du prestataire');
     }
   }
+
+  async findByUserId(userId: string): Promise<PrestataireDto | null> {
+    const prestataire = await this.prestataireRepository.findOne({
+      where: { user: { id: userId } },
+      relations: { user: true }
+    });
+
+    if (!prestataire) {
+      return null;
+    }
+
+    return new PrestataireDto(prestataire);
+  }
+
+  async verifyOwnership(prestataireId: string, userId: string): Promise<boolean> {
+    const prestataire = await this.prestataireRepository.findOne({
+      where: { id: prestataireId },
+      relations: { user: true }
+    });
+
+    if (!prestataire) {
+      throw new NotFoundException(`Prestataire avec l'ID ${prestataireId} non trouvé`);
+    }
+
+    return prestataire.user.id === userId;
+  }
 }

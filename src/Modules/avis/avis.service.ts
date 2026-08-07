@@ -1,8 +1,15 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemsPerPage } from 'src/common';
 import { Repository } from 'typeorm';
 import { Prestataire } from '../prestataire/entities/prestataire.entity';
+import { ReservationService } from '../reservation/reservation.service';
 import { Touriste } from '../touriste/entities/touriste.entity';
 import { AvisDto } from './dto/avis.dto';
 import { Avis } from './entities/avis.entity';
@@ -19,7 +26,8 @@ export class AvisService {
     @InjectRepository(Touriste)
     private readonly touristeRepository: Repository<Touriste>,
     @InjectRepository(Prestataire)
-    private readonly prestataireRepository: Repository<Prestataire>
+    private readonly prestataireRepository: Repository<Prestataire>,
+    private readonly reservationService: ReservationService
   ) {}
 
   async findAll(
@@ -93,6 +101,18 @@ export class AvisService {
 
       if (!prestataire) {
         throw new NotFoundException(`Prestataire avec l'ID ${createAvisPayload.prestataireId} non trouvé`);
+      }
+
+      // Vérifier que le touriste a bien réservé chez ce prestataire
+      const hasReserved = await this.reservationService.hasTouristeReservedPrestataire(
+        touriste.user.id,
+        prestataire.id
+      );
+
+      if (!hasReserved) {
+        throw new BadRequestException(
+          'Vous devez avoir effectué une réservation confirmée chez ce prestataire pour laisser un avis'
+        );
       }
 
       const newAvis = this.avisRepository.create({
