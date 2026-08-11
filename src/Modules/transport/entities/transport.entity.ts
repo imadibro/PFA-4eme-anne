@@ -1,6 +1,6 @@
+import { TypeTransport } from 'src/common/enums';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AgenceVoyage } from '../../agence-voyage/entities/agence-voyage.entity';
-import { TypeTransport } from '../../common/enums';
 
 @Entity('transports')
 export class Transport {

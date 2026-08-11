@@ -1,5 +1,5 @@
 import { IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID } from 'class-validator';
-import { TypePack } from '../../common/enums';
+import { TypePack } from '../../../common/enums';
 
 export class UpdatePackVoyagePayload {
   @IsString({ message: 'Le nom du pack doit être une chaîne de caractères.' })

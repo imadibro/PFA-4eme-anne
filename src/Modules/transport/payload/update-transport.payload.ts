@@ -1,5 +1,5 @@
 import { IsEnum, IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
-import { TypeTransport } from '../../common/enums';
+import { TypeTransport } from 'src/common/enums';
 
 export class UpdateTransportPayload {
   @IsEnum(TypeTransport, { message: 'Le type de transport doit être valide.' })

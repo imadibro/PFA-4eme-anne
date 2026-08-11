@@ -1,5 +1,5 @@
 import { IsDateString, IsEnum, IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
-import { StatutReservation } from '../../common/enums';
+import { StatutReservation } from 'src/common/enums';
 
 export class UpdateReservationPayload {
   @IsDateString({}, { message: 'La date de réservation doit être une date valide.' })

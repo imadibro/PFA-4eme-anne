@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { TypeChambre } from '../../../common/enums';
 import { Hotel } from '../../hotel/entities/hotel.entity';
-import { TypeChambre } from '../../common/enums';
 
 @Entity()
 export class Chambre {
@@ -19,6 +19,6 @@ export class Chambre {
   @Column({ default: true })
   estDisponible: boolean;
 
-  @ManyToOne(() => Hotel, (hotel) => hotel.chambres)
+  @ManyToOne(() => Hotel, hotel => hotel.chambres)
   hotel: Hotel;
 }

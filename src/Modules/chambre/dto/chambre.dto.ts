@@ -1,4 +1,4 @@
-import { TypeChambre } from '../../common/enums';
+import { TypeChambre } from '../../../common/enums';
 import { Chambre } from '../entities/chambre.entity';
 
 export class ChambreDto {

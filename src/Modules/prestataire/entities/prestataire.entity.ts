@@ -1,6 +1,6 @@
-import { Reservation } from 'src/reservation/entities/reservation.entity';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Avis } from '../../avis/entities/avis.entity';
+import { Reservation } from '../../reservation/entities/reservation.entity';
 import { User } from '../../user/entities/user.entity';
 
 @Entity('prestataires')

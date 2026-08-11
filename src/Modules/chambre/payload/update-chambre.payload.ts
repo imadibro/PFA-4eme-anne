@@ -1,5 +1,5 @@
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { TypeChambre } from '../../common/enums';
+import { TypeChambre } from '../../../common/enums';
 
 export class UpdateChambrePayload {
   @IsString({ message: 'Le numéro de chambre doit être une chaîne de caractères.' })

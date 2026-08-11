@@ -2,8 +2,8 @@ import { Injectable, InternalServerErrorException, Logger, NotFoundException } f
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemsPerPage, PaginatedResult } from 'src/common';
 import { Repository } from 'typeorm';
-import { PackVoyage } from '../../pack-voyage/entities/pack-voyage.entity';
 import { Chambre } from '../chambre/entities/chambre.entity';
+import { PackVoyage } from '../pack-voyage/entities/pack-voyage.entity';
 import { Prestataire } from '../prestataire/entities/prestataire.entity';
 import { Touriste } from '../touriste/entities/touriste.entity';
 import { Transport } from '../transport/entities/transport.entity';

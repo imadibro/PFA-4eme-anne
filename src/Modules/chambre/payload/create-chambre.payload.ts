@@ -1,5 +1,5 @@
 import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, IsUUID } from 'class-validator';
-import { TypeChambre } from '../../common/enums';
+import { TypeChambre } from '../../../common/enums';
 
 export class CreateChambrePayload {
   @IsNotEmpty({ message: "L'ID hôtel est requis." })

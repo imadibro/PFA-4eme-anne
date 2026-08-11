@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PackVoyage } from '../../pack-voyage/entities/pack-voyage.entity';
 import { Chambre } from '../chambre/entities/chambre.entity';
+import { PackVoyage } from '../pack-voyage/entities/pack-voyage.entity';
 import { Prestataire } from '../prestataire/entities/prestataire.entity';
 import { Touriste } from '../touriste/entities/touriste.entity';
 import { Transport } from '../transport/entities/transport.entity';

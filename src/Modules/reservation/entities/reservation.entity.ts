@@ -1,10 +1,10 @@
-import { Chambre } from 'src/chambre/entities/chambre.entity';
-import { PackVoyage } from 'src/pack-voyage/entities/pack-voyage.entity';
-import { Transport } from 'src/transport/entities/transport.entity';
+import { StatutReservation } from 'src/common/enums';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { StatutReservation } from '../../common/enums';
+import { Chambre } from '../../chambre/entities/chambre.entity';
+import { PackVoyage } from '../../pack-voyage/entities/pack-voyage.entity';
 import { Prestataire } from '../../prestataire/entities/prestataire.entity';
 import { Touriste } from '../../touriste/entities/touriste.entity';
+import { Transport } from '../../transport/entities/transport.entity';
 
 @Entity()
 export class Reservation {

@@ -1,4 +1,4 @@
-import { StatutReservation } from '../../common/enums';
+import { StatutReservation } from 'src/common/enums';
 import { Reservation } from '../entities/reservation.entity';
 
 export class ReservationDto {

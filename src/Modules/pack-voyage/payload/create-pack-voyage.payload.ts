@@ -9,7 +9,7 @@ import {
   IsString,
   IsUUID
 } from 'class-validator';
-import { TypePack } from '../../common/enums';
+import { TypePack } from '../../../common/enums';
 
 export class CreatePackVoyagePayload {
   @IsNotEmpty({ message: "L'ID agence de voyage est requis." })

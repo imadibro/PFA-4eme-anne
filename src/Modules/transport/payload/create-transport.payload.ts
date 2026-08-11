@@ -1,5 +1,5 @@
 import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsPositive, IsUUID } from 'class-validator';
-import { TypeTransport } from '../../common/enums';
+import { TypeTransport } from 'src/common/enums';
 
 export class CreateTransportPayload {
   @IsNotEmpty({ message: "L'ID agence de voyage est requis." })

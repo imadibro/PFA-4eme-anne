@@ -1,5 +1,5 @@
 import { IsDateString, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsUUID } from 'class-validator';
-import { StatutReservation } from '../../common/enums';
+import { StatutReservation } from 'src/common/enums';
 
 export class CreateReservationPayload {
   @IsNotEmpty({ message: "L'ID touriste est requis." })

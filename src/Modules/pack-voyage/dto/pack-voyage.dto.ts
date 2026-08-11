@@ -1,4 +1,4 @@
-import { TypePack } from '../../common/enums';
+import { TypePack } from '../../../common/enums';
 import { PackVoyage } from '../entities/pack-voyage.entity';
 
 export class PackVoyageDto {

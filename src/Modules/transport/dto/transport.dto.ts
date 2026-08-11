@@ -1,4 +1,4 @@
-import { TypeTransport } from '../../common/enums';
+import { TypeTransport } from 'src/common/enums';
 import { Transport } from '../entities/transport.entity';
 
 export class TransportDto {

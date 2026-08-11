@@ -7,12 +7,12 @@ import { Hotel } from '../hotel/entities/hotel.entity';
 import { Restaurant } from '../restaurant/entities/restaurant.entity';
 import { Transport } from '../transport/entities/transport.entity';
 import { PackVoyage } from './entities/pack-voyage.entity';
-import { PackVoyageController } from './pack-voyage.controller';
+
 import { PackVoyageService } from './pack-voyage.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PackVoyage, AgenceVoyage, Guide, Hotel, Restaurant, Transport, Circuit])],
-  controllers: [PackVoyageController],
+  controllers: [],
   providers: [PackVoyageService],
   exports: [PackVoyageService]
 })

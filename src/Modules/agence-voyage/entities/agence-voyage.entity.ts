@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { PackVoyage } from '../../../pack-voyage/entities/pack-voyage.entity';
+import { PackVoyage } from '../../pack-voyage/entities/pack-voyage.entity';
 import { Prestataire } from '../../prestataire/entities/prestataire.entity';
 import { Transport } from '../../transport/entities/transport.entity';
 
