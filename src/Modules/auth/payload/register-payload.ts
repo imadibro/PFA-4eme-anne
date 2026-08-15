@@ -49,11 +49,11 @@ export class RegisterPayload {
 }
 
 export class LoginPayload {
-  @IsNotEmpty()
-  @IsString()
-  username: string;
+  @IsNotEmpty({ message: "Le nom d'utilisateur ou l'email est requis." })
+  @IsString({ message: "Le nom d'utilisateur ou l'email doit être une chaîne de caractères." })
+  usernameOrEmail: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'Le mot de passe doit être une chaîne de caractères.' })
+  @IsNotEmpty({ message: 'Le mot de passe est requis.' })
   password: string;
 }

@@ -52,11 +52,6 @@ export class UserService {
     return user ? new UserDto(user) : null;
   }
 
-  create(user: Partial<User>): Promise<UserDto> {
-    const newUser = this.userRepository.create(user);
-    return this.userRepository.save(newUser).then(user => new UserDto(user));
-  }
-
   async update(id: string, user: Partial<User>): Promise<UserDto | null> {
     await this.userRepository.update(id, user);
     return this.findOne(id);
@@ -64,5 +59,22 @@ export class UserService {
 
   async remove(id: string): Promise<void> {
     await this.userRepository.delete(id);
+  }
+
+  async verifyAccount(id: string): Promise<UserDto> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    await this.userRepository.update({ id }, { isAccountVerified: true });
+    this.logger.log(`Compte vérifié pour l'utilisateur: ${user.username}`);
+
+    const updatedUser = await this.userRepository.findOneBy({ id });
+    if (!updatedUser) {
+      throw new NotFoundException("Erreur lors de la récupération de l'utilisateur mis à jour");
+    }
+
+    return new UserDto(updatedUser);
   }
 }

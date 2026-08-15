@@ -7,7 +7,6 @@ import {
   HttpCode,
   Logger,
   Param,
-  Post,
   Put,
   Query,
   UseGuards
@@ -29,13 +28,6 @@ import { UserService } from '../services/user.service';
 export class UserController {
   private readonly logger = new Logger(UserController.name);
   constructor(private readonly userService: UserService) {}
-
-  @Post()
-  @HttpCode(201)
-  @Roles(UserRole.ADMIN)
-  create(@Body() user: Partial<User>): Promise<UserDto> {
-    return this.userService.create(user);
-  }
 
   @Get()
   @HttpCode(200)
@@ -74,6 +66,13 @@ export class UserController {
   @UseGuards(OwnershipGuard)
   update(@Param('id') id: string, @Body() user: Partial<User>): Promise<UserDto | null> {
     return this.userService.update(id, user);
+  }
+
+  @Put(':id/verify')
+  @HttpCode(200)
+  @Roles(UserRole.ADMIN)
+  verifyAccount(@Param('id') id: string): Promise<UserDto> {
+    return this.userService.verifyAccount(id);
   }
 
   @Delete(':id')

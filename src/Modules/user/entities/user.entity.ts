@@ -4,7 +4,7 @@ import { GENDERS, UserRole } from 'src/common/enums';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 @Entity('users')
-@Unique(['email', 'username'])
+@Unique(['email', 'username', 'phone'])
 export abstract class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;

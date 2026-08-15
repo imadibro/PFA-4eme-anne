@@ -16,8 +16,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { Public } from '../../common/guards/public-route.decorator.js';
 import type { JWTPayloadType } from '../../common/type/type.js';
 import { AuthService } from './auth.service.js';
-import { LoginDto } from './dto/login.dto.js';
-import { RegisterPayload } from './payload/register-payload.js';
+import { LoginPayload, RegisterPayload } from './payload/register-payload.js';
 
 @Controller('auth')
 export class AuthController {
@@ -35,8 +34,8 @@ export class AuthController {
   @Post('login')
   @Public()
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const { accessToken, refreshToken } = await this.authService.login(loginDto);
+  async login(@Body() loginPayload: LoginPayload, @Res({ passthrough: true }) res: Response) {
+    const { accessToken, refreshToken } = await this.authService.login(loginPayload);
     //  Cookie HttpOnly
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,

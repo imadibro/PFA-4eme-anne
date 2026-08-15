@@ -6,8 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { JWTPayloadType } from '../../common/type/type.js';
 import { User } from '../user/entities/user.entity.js';
-import { LoginDto } from './dto/login.dto.js';
-import { RegisterPayload } from './payload/register-payload.js';
+import { LoginPayload, RegisterPayload } from './payload/register-payload.js';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +37,7 @@ export class AuthService {
 
     const defaultProfileImage = registerDto.gender === 'male' ? boyProfilePic : girlProfilePic;
     const userRole = registerDto.userRole || 'TOURISTE';
-    const isAccountVerified = userRole === 'TOURISTE' ? true : false;
+    const isAccountVerified = userRole === 'TOURISTE' || userRole === 'ADMIN' ? true : false;
 
     const newUser = this.userRepository.create({
       firstName: registerDto.firstName,
@@ -66,9 +65,16 @@ export class AuthService {
     return { accessToken };
   }
 
-  async login(loginDto: LoginDto): Promise<{ accessToken: string; refreshToken: string }> {
-    const { username, password } = loginDto;
-    const user = await this.userRepository.findOneBy({ username });
+  async login(loginPayload: LoginPayload): Promise<{ accessToken: string; refreshToken: string }> {
+    const { usernameOrEmail, password } = loginPayload;
+
+    // Déterminer si c'est un email ou un username
+    const isEmail = usernameOrEmail.includes('@');
+
+    // Rechercher l'utilisateur par email ou username
+    const user = await this.userRepository.findOneBy(
+      isEmail ? { email: usernameOrEmail } : { username: usernameOrEmail }
+    );
 
     if (!user || !(await user.validatePassword(password))) {
       throw new UnauthorizedException("Les informations d'identification sont invalides");
