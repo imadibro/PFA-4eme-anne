@@ -56,10 +56,14 @@ export class AuthService {
     const savedUser = await this.userRepository.save(newUser);
     this.logger.log(`Nouvel utilisateur créé avec succès: ${savedUser.username}`);
 
+    const sessionToken = this.generateSessionToken();
+    await this.userRepository.update(savedUser.id, { sessionToken });
+
     const payload: JWTPayloadType = {
       id: savedUser.id,
       username: savedUser.username,
-      userRole: savedUser.userRole
+      userRole: savedUser.userRole,
+      sessionToken
     };
     const accessToken = await this.generateJwt(payload);
     return { accessToken };
@@ -84,10 +88,14 @@ export class AuthService {
       throw new UnauthorizedException('Le compte est désactivé');
     }
 
+    const sessionToken = this.generateSessionToken();
+    await this.userRepository.update(user.id, { sessionToken });
+
     const payload: JWTPayloadType = {
       id: user.id,
       username: user.username,
-      userRole: user.userRole
+      userRole: user.userRole,
+      sessionToken
     };
 
     this.logger.log(`JWT payload: ${JSON.stringify(payload)}`);
@@ -120,10 +128,15 @@ export class AuthService {
         throw new UnauthorizedException();
       }
 
+      if (!user.sessionToken) {
+        throw new UnauthorizedException('Session expirée. Veuillez vous reconnecter.');
+      }
+
       const newPayload: JWTPayloadType = {
         id: user.id,
         username: user.username,
-        userRole: user.userRole
+        userRole: user.userRole,
+        sessionToken: user.sessionToken
       };
 
       const newAccessToken = await this.jwtService.signAsync(newPayload, {
@@ -139,7 +152,8 @@ export class AuthService {
 
   async logout(userId: string) {
     await this.userRepository.update(userId, {
-      refreshToken: null
+      refreshToken: null,
+      sessionToken: null
     });
   }
 
@@ -158,5 +172,9 @@ export class AuthService {
   public async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
+  }
+
+  private generateSessionToken(): string {
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
   }
 }

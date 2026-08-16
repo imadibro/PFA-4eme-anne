@@ -33,6 +33,9 @@ export abstract class User {
   @Column({ name: 'refresh_token', type: 'varchar', nullable: true, select: false })
   refreshToken: string | null;
 
+  @Column({ name: 'session_token', type: 'varchar', nullable: true })
+  sessionToken: string | null;
+
   @Column({ name: 'gender', type: 'enum', enum: GENDERS, default: GENDERS.FEMALE })
   gender: string;
 
