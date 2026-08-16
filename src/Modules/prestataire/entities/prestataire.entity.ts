@@ -1,4 +1,14 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { CURRENT_TIMESTAMP } from 'src/common/constants/constant';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 import { Avis } from '../../avis/entities/avis.entity';
 import { Reservation } from '../../reservation/entities/reservation.entity';
 import { User } from '../../user/entities/user.entity';
@@ -29,4 +39,14 @@ export abstract class Prestataire {
 
   @OneToMany(() => Reservation, reservation => reservation.prestataire)
   reservations: Reservation[];
+
+  @CreateDateColumn({ type: 'timestamp', default: () => CURRENT_TIMESTAMP })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => CURRENT_TIMESTAMP,
+    onUpdate: CURRENT_TIMESTAMP
+  })
+  updatedAt: Date;
 }
