@@ -92,11 +92,12 @@ export class PrestataireService {
         nomEntreprise: createPrestatairePayload.nomEntreprise,
         adress: createPrestatairePayload.adress,
         ville: createPrestatairePayload.ville,
-        localisation: createPrestatairePayload.localisation
+        localisation: createPrestatairePayload.localisation,
+        category: createPrestatairePayload.category
       });
 
       const savedPrestataire = await this.prestataireRepository.save(newPrestataire);
-      this.logger.log(`Nouveau prestataire créé avec succès: ${savedPrestataire.id}`);
+      this.logger.log(`Nouveau prestataire créé avec succès: ${savedPrestataire.user.username}`);
 
       return new PrestataireDto(savedPrestataire);
     } catch (error) {

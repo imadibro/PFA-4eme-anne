@@ -20,4 +20,8 @@ export class CreatePrestatairePayload {
   @IsNotEmpty({ message: 'La localisation est requise.' })
   @IsString({ message: 'La localisation doit être une chaîne de caractères.' })
   localisation: string;
+
+  @IsNotEmpty({ message: 'La catégorie est requise.' })
+  @IsString({ message: 'La catégorie doit être une chaîne de caractères.' })
+  category: string;
 }

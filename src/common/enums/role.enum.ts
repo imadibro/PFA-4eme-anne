@@ -1,7 +1,7 @@
 export enum UserRole {
   ADMIN = 'ADMIN',
   TOURISTE = 'TOURISTE',
-  PRESTATAIRE = 'PRESTATAIRE',
+  PRESTATAIRE = 'PRESTATAIRE'
 }
 
 export const GENDER_MALE = 'male';
@@ -10,5 +10,13 @@ export const GENDER_OTHER = 'other';
 export const GENDERS = {
   MALE: GENDER_MALE,
   FEMALE: GENDER_FEMALE,
-  OTHER: GENDER_OTHER,
+  OTHER: GENDER_OTHER
+};
+
+export const PRESTATAIRE_CATEGORIES = {
+  HOTEL: 'hotel',
+  RESTAURANT: 'restaurant',
+  GUIDE: 'guide',
+  TRANSPORT: 'transport',
+  AGENCE_VOYAGE: 'agence_voyage'
 };

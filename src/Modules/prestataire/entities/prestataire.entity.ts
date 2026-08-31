@@ -1,3 +1,4 @@
+import { PRESTATAIRE_CATEGORIES } from 'src/common';
 import { CURRENT_TIMESTAMP } from 'src/common/constants/constant';
 import {
   Column,
@@ -18,7 +19,7 @@ export abstract class Prestataire {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => User, { eager: true, onDelete: 'CASCADE' })
+  @OneToOne(() => User, { eager: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -33,6 +34,9 @@ export abstract class Prestataire {
 
   @Column()
   localisation: string;
+
+  @Column({ name: 'category', type: 'enum', enum: PRESTATAIRE_CATEGORIES, default: null })
+  category: string | null;
 
   @OneToMany(() => Avis, avis => avis.prestataire)
   avis: Avis[];
