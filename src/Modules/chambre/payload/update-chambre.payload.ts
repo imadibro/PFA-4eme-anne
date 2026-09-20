@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { TypeChambre } from '../../../common/enums';
 
 export class UpdateChambrePayload {
