@@ -90,8 +90,8 @@ export class HotelService {
 
       const newHotel = this.hotelRepository.create({
         prestataire,
-        nbrChambre: createHotelPayload.nbrChambre,
-        nbrEtoiles: createHotelPayload.nbrEtoiles
+        nbrEtoiles: createHotelPayload.nbrEtoiles,
+        equipements: createHotelPayload.equipements
       });
 
       const savedHotel = await this.hotelRepository.save(newHotel);
@@ -118,12 +118,12 @@ export class HotelService {
         throw new NotFoundException(`Hôtel avec l'ID ${id} non trouvé`);
       }
 
-      if (updateHotelPayload.nbrChambre !== undefined) {
-        hotel.nbrChambre = updateHotelPayload.nbrChambre;
-      }
-
       if (updateHotelPayload.nbrEtoiles !== undefined) {
         hotel.nbrEtoiles = updateHotelPayload.nbrEtoiles;
+      }
+
+      if (updateHotelPayload.equipements !== undefined) {
+        hotel.equipements = updateHotelPayload.equipements;
       }
 
       const updatedHotel = await this.hotelRepository.save(hotel);

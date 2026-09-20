@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateUserPayload {
   @IsNotEmpty({ message: "L'ID est requis." })
@@ -41,4 +41,12 @@ export class UpdateUserPayload {
   @IsString()
   @IsOptional()
   profileImage: string;
+
+  @IsString()
+  @IsOptional()
+  preferredCurrency: string;
+
+  @IsBoolean()
+  @IsOptional()
+  notificationsEnabled: boolean;
 }

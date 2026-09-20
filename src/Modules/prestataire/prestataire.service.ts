@@ -93,7 +93,8 @@ export class PrestataireService {
         adress: createPrestatairePayload.adress,
         ville: createPrestatairePayload.ville,
         localisation: createPrestatairePayload.localisation,
-        category: createPrestatairePayload.category
+        category: createPrestatairePayload.category,
+        description: createPrestatairePayload.description
       });
 
       const savedPrestataire = await this.prestataireRepository.save(newPrestataire);
@@ -134,6 +135,14 @@ export class PrestataireService {
 
       if (updatePrestatairePayload.localisation !== undefined) {
         prestataire.localisation = updatePrestatairePayload.localisation;
+      }
+
+      if (updatePrestatairePayload.description !== undefined) {
+        prestataire.description = updatePrestatairePayload.description;
+      }
+
+      if (updatePrestatairePayload.category !== undefined) {
+        prestataire.category = updatePrestatairePayload.category;
       }
 
       const updatedPrestataire = await this.prestataireRepository.save(prestataire);

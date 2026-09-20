@@ -6,6 +6,10 @@ export class UpdateChambrePayload {
   @IsOptional()
   numero?: string;
 
+  @IsString({ message: 'Le nom de la chambre doit être une chaîne de caractères.' })
+  @IsOptional()
+  nom?: string;
+
   @IsEnum(TypeChambre, { message: 'Le type de chambre doit être valide.' })
   @IsOptional()
   type?: TypeChambre;
@@ -15,7 +19,17 @@ export class UpdateChambrePayload {
   @IsOptional()
   prixNuit?: number;
 
-  @IsBoolean({ message: 'La disponibilité doit être un booléen.' })
+  @IsInt({ message: 'La capacité doit être un entier.' })
+  @IsPositive({ message: 'La capacité doit être positive.' })
   @IsOptional()
-  estDisponible?: boolean;
+  capacite?: number;
+
+  @IsBoolean({ message: "L'activation pour réservation doit être un booléen." })
+  @IsOptional()
+  estActifPourReservation?: boolean;
+
+  @IsArray({ message: 'Les photos doivent être un tableau.' })
+  @IsString({ each: true, message: 'Chaque photo doit être une chaîne de caractères.' })
+  @IsOptional()
+  photos?: string[];
 }

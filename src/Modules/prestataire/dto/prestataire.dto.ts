@@ -9,6 +9,9 @@ export class PrestataireDto {
     this.adress = prestataire.adress;
     this.ville = prestataire.ville;
     this.localisation = prestataire.localisation;
+    this.description = prestataire.description;
+    this.nombreAvis = prestataire.nombreAvis;
+    this.category = prestataire.category;
   }
 
   id: string;
@@ -17,4 +20,7 @@ export class PrestataireDto {
   adress: string;
   ville: string;
   localisation: string;
+  description: string;
+  nombreAvis: number;
+  category: string | null;
 }

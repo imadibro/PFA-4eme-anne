@@ -7,10 +7,14 @@ export class TouristeDto {
     this.user = touriste.user ? new UserDto(touriste.user) : null;
     this.nationality = touriste.nationality;
     this.dateNaissance = touriste.dateNaissance;
+    this.createdAt = touriste.createdAt;
+    this.updatedAt = touriste.updatedAt;
   }
 
   id: string;
   user: UserDto | null;
   nationality: string;
   dateNaissance: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

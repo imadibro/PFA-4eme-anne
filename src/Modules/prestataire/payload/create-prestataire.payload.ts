@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreatePrestatairePayload {
   @IsNotEmpty({ message: "L'ID utilisateur est requis." })
@@ -24,4 +24,8 @@ export class CreatePrestatairePayload {
   @IsNotEmpty({ message: 'La catégorie est requise.' })
   @IsString({ message: 'La catégorie doit être une chaîne de caractères.' })
   category: string;
+
+  @IsString({ message: 'La description doit être une chaîne de caractères.' })
+  @IsOptional()
+  description?: string;
 }

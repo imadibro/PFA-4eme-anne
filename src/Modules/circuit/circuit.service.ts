@@ -77,7 +77,8 @@ export class CircuitService {
       const newCircuit = this.circuitRepository.create({
         title: createCircuitPayload.title,
         prix: createCircuitPayload.prix,
-        dureeJours: createCircuitPayload.dureeJours
+        dureeJours: createCircuitPayload.dureeJours,
+        etapes: createCircuitPayload.etapes
       });
 
       const savedCircuit = await this.circuitRepository.save(newCircuit);
@@ -119,6 +120,10 @@ export class CircuitService {
 
       if (updateCircuitPayload.dureeJours !== undefined) {
         circuit.dureeJours = updateCircuitPayload.dureeJours;
+      }
+
+      if (updateCircuitPayload.etapes !== undefined) {
+        circuit.etapes = updateCircuitPayload.etapes;
       }
 
       const updatedCircuit = await this.circuitRepository.save(circuit);

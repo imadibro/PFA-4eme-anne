@@ -1,7 +1,11 @@
-import { IsDateString, IsEnum, IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
-import { StatutReservation } from 'src/common/enums';
+import { IsDateString, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID } from 'class-validator';
+import { StatutReservation, TypeReservation } from 'src/common/enums';
 
 export class UpdateReservationPayload {
+  @IsEnum(TypeReservation, { message: 'Le type de réservation doit être valide.' })
+  @IsOptional()
+  typeReservation?: TypeReservation;
+
   @IsDateString({}, { message: 'La date de réservation doit être une date valide.' })
   @IsOptional()
   dateReservation?: string;
@@ -34,4 +38,21 @@ export class UpdateReservationPayload {
   @IsInt({ message: "L'ID pack voyage doit être un entier." })
   @IsOptional()
   packVoyageId?: number;
+
+  @IsUUID(undefined, { message: "L'ID restaurant doit être un UUID valide." })
+  @IsOptional()
+  restaurantId?: string;
+
+  @IsUUID(undefined, { message: "L'ID guide doit être un UUID valide." })
+  @IsOptional()
+  guideId?: string;
+
+  @IsInt({ message: 'Le nombre de personnes doit être un entier.' })
+  @IsPositive({ message: 'Le nombre de personnes doit être positif.' })
+  @IsOptional()
+  nbPersonnes?: number;
+
+  @IsString({ message: 'Les commentaires spéciaux doivent être une chaîne de caractères.' })
+  @IsOptional()
+  commentairesSpecial?: string;
 }

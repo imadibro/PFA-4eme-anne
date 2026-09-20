@@ -16,6 +16,6 @@ export class Transport {
   @Column({ type: 'double precision' })
   prixJr: number;
 
-  @ManyToOne(() => AgenceVoyage)
+  @ManyToOne(() => AgenceVoyage, a => a.transports, { onDelete: 'CASCADE' })
   agenceVoyage: AgenceVoyage;
 }

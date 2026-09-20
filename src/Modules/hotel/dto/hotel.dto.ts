@@ -4,12 +4,12 @@ export class HotelDto {
   constructor(hotel: Hotel) {
     this.id = hotel.id;
     this.prestataireId = hotel.prestataire?.id;
-    this.nbrChambre = hotel.nbrChambre;
+    this.equipements = hotel.equipements;
     this.nbrEtoiles = hotel.nbrEtoiles;
   }
 
   id: string;
   prestataireId: string;
-  nbrChambre: number;
+  equipements: string[];
   nbrEtoiles: number;
 }

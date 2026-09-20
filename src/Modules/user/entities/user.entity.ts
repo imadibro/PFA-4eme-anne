@@ -21,7 +21,7 @@ export abstract class User {
   @Column({ name: 'username', length: 100, unique: true, nullable: false })
   username: string;
 
-  @Column({ name: 'password', length: 255, nullable: false })
+  @Column({ name: 'password', length: 255, nullable: false, select: false })
   password: string;
 
   @Column({ name: 'phone', length: 20, nullable: false })
@@ -48,6 +48,13 @@ export abstract class User {
   @Column({ name: 'is_account_verified', default: false })
   isAccountVerified: boolean;
 
+  // --- Ajouts pour l'application de voyage (Préférences & Fidélité) ---
+  @Column({ name: 'preferred_currency', length: 5, default: 'GBP' })
+  preferredCurrency: string; // 'GBP' | 'USD' | 'EUR'
+
+  @Column({ name: 'notifications_enabled', default: true })
+  notificationsEnabled: boolean;
+
   @CreateDateColumn({ type: 'timestamp', default: () => CURRENT_TIMESTAMP })
   createdAt: Date;
 
@@ -62,3 +69,9 @@ export abstract class User {
     return await bcrypt.compare(plainPassword, this.password);
   }
 }
+
+// Relations
+// Liste des IDs des propriétés en favoris
+// @ManyToMany('Property')
+// @JoinTable({ name: 'user_favorites' })
+// favorites: any[];

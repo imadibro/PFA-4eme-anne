@@ -11,12 +11,12 @@ export class Hotel {
   @JoinColumn({ name: 'prestataire_id' })
   prestataire: Prestataire;
 
-  @Column({ name: 'nbr_chambre' })
-  nbrChambre: number;
-
-  @Column({ name: 'nbr_etoiles' })
+  @Column({ name: 'nbr_etoiles', default: 3 })
   nbrEtoiles: number;
 
-  @OneToMany(() => Chambre, c => c.hotel)
+  @Column('simple-array', { nullable: true })
+  equipements: string[];
+
+  @OneToMany(() => Chambre, c => c.hotel, { cascade: true })
   chambres: Chambre[];
 }

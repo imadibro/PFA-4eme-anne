@@ -1,9 +1,11 @@
-import { StatutReservation } from 'src/common/enums';
+import { StatutReservation, TypeReservation } from 'src/common/enums';
 import { Reservation } from '../entities/reservation.entity';
 
 export class ReservationDto {
   constructor(reservation: Reservation) {
     this.id = reservation.id;
+    this.codeReservation = reservation.codeReservation;
+    this.typeReservation = reservation.typeReservation;
     this.touristeId = reservation.touriste?.id;
     this.prestataireId = reservation.prestataire?.id;
     this.dateReservation = reservation.dateReservation;
@@ -14,9 +16,15 @@ export class ReservationDto {
     this.chambreId = reservation.chambre?.id;
     this.transportId = reservation.transport?.id;
     this.packVoyageId = reservation.packVoyage?.id;
+    this.restaurantId = reservation.restaurant?.id;
+    this.guideId = reservation.guide?.id;
+    this.nbPersonnes = reservation.nbPersonnes;
+    this.commentairesSpecial = reservation.commentairesSpecial;
   }
 
   id: number;
+  codeReservation: string;
+  typeReservation: TypeReservation;
   touristeId: string;
   prestataireId: string;
   dateReservation: Date;
@@ -27,4 +35,8 @@ export class ReservationDto {
   chambreId?: number;
   transportId?: number;
   packVoyageId?: number;
+  restaurantId?: string;
+  guideId?: string;
+  nbPersonnes: number;
+  commentairesSpecial?: string;
 }

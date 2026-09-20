@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateCircuitPayload {
   @IsNotEmpty({ message: 'Le titre est requis.' })
@@ -14,4 +14,8 @@ export class CreateCircuitPayload {
   @IsInt({ message: 'La durée en jours doit être un entier.' })
   @IsPositive({ message: 'La durée en jours doit être positive.' })
   dureeJours: number;
+
+  @IsNotEmpty({ message: 'Les étapes sont requises.' })
+  @IsArray({ message: 'Les étapes doivent être un tableau.' })
+  etapes: string[];
 }

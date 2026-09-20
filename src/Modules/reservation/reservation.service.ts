@@ -3,8 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ItemsPerPage, PaginatedResult } from 'src/common';
 import { Repository } from 'typeorm';
 import { Chambre } from '../chambre/entities/chambre.entity';
+import { Guide } from '../guide/entities/guide.entity';
 import { PackVoyage } from '../pack-voyage/entities/pack-voyage.entity';
 import { Prestataire } from '../prestataire/entities/prestataire.entity';
+import { Restaurant } from '../restaurant/entities/restaurant.entity';
 import { Touriste } from '../touriste/entities/touriste.entity';
 import { Transport } from '../transport/entities/transport.entity';
 import { ReservationDto } from './dto/reservation.dto';
@@ -28,7 +30,11 @@ export class ReservationService {
     @InjectRepository(Transport)
     private readonly transportRepository: Repository<Transport>,
     @InjectRepository(PackVoyage)
-    private readonly packVoyageRepository: Repository<PackVoyage>
+    private readonly packVoyageRepository: Repository<PackVoyage>,
+    @InjectRepository(Restaurant)
+    private readonly restaurantRepository: Repository<Restaurant>,
+    @InjectRepository(Guide)
+    private readonly guideRepository: Repository<Guide>
   ) {}
 
   async findAll(page: number, limit: number, search?: string): Promise<PaginatedResult<ReservationDto>> {
@@ -43,7 +49,9 @@ export class ReservationService {
         .leftJoinAndSelect('prestataire.user', 'prestataireUser')
         .leftJoinAndSelect('reservation.chambre', 'chambre')
         .leftJoinAndSelect('reservation.transport', 'transport')
-        .leftJoinAndSelect('reservation.packVoyage', 'packVoyage');
+        .leftJoinAndSelect('reservation.packVoyage', 'packVoyage')
+        .leftJoinAndSelect('reservation.restaurant', 'restaurant')
+        .leftJoinAndSelect('reservation.guide', 'guide');
 
       if (search) {
         queryBuilder.where('reservation.statut ILIKE :search OR CAST(reservation.montant AS TEXT) ILIKE :search', {
@@ -75,7 +83,9 @@ export class ReservationService {
         prestataire: { user: true },
         chambre: true,
         transport: true,
-        packVoyage: true
+        packVoyage: true,
+        restaurant: true,
+        guide: true
       }
     });
 
@@ -139,7 +149,33 @@ export class ReservationService {
         packVoyage = foundPack;
       }
 
+      let restaurant: Restaurant | undefined = undefined;
+      if (createReservationPayload.restaurantId) {
+        const foundRestaurant = await this.restaurantRepository.findOne({
+          where: { id: createReservationPayload.restaurantId }
+        });
+        if (!foundRestaurant) {
+          throw new NotFoundException(`Restaurant avec l'ID ${createReservationPayload.restaurantId} non trouvé`);
+        }
+        restaurant = foundRestaurant;
+      }
+
+      let guide: Guide | undefined = undefined;
+      if (createReservationPayload.guideId) {
+        const foundGuide = await this.guideRepository.findOne({
+          where: { id: createReservationPayload.guideId }
+        });
+        if (!foundGuide) {
+          throw new NotFoundException(`Guide avec l'ID ${createReservationPayload.guideId} non trouvé`);
+        }
+        guide = foundGuide;
+      }
+
       const newReservation = this.reservationRepository.create({
+        codeReservation:
+          createReservationPayload.codeReservation ??
+          `RES-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        typeReservation: createReservationPayload.typeReservation,
         touriste,
         prestataire,
         dateReservation: new Date(createReservationPayload.dateReservation),
@@ -149,7 +185,11 @@ export class ReservationService {
         statut: createReservationPayload.statut,
         chambre,
         transport,
-        packVoyage
+        packVoyage,
+        restaurant,
+        guide,
+        nbPersonnes: createReservationPayload.nbPersonnes,
+        commentairesSpecial: createReservationPayload.commentairesSpecial
       });
 
       const savedReservation = await this.reservationRepository.save(newReservation);
@@ -169,11 +209,15 @@ export class ReservationService {
     try {
       const reservation = await this.reservationRepository.findOne({
         where: { id },
-        relations: { chambre: true, transport: true, packVoyage: true }
+        relations: { chambre: true, transport: true, packVoyage: true, restaurant: true, guide: true }
       });
 
       if (!reservation) {
         throw new NotFoundException(`Réservation avec l'ID ${id} non trouvée`);
+      }
+
+      if (updateReservationPayload.typeReservation !== undefined) {
+        reservation.typeReservation = updateReservationPayload.typeReservation;
       }
 
       if (updateReservationPayload.dateReservation !== undefined) {
@@ -224,6 +268,32 @@ export class ReservationService {
         reservation.packVoyage = packVoyage;
       }
 
+      if (updateReservationPayload.restaurantId !== undefined) {
+        const restaurant = await this.restaurantRepository.findOne({
+          where: { id: updateReservationPayload.restaurantId }
+        });
+        if (!restaurant) {
+          throw new NotFoundException(`Restaurant avec l'ID ${updateReservationPayload.restaurantId} non trouvé`);
+        }
+        reservation.restaurant = restaurant;
+      }
+
+      if (updateReservationPayload.guideId !== undefined) {
+        const guide = await this.guideRepository.findOne({ where: { id: updateReservationPayload.guideId } });
+        if (!guide) {
+          throw new NotFoundException(`Guide avec l'ID ${updateReservationPayload.guideId} non trouvé`);
+        }
+        reservation.guide = guide;
+      }
+
+      if (updateReservationPayload.nbPersonnes !== undefined) {
+        reservation.nbPersonnes = updateReservationPayload.nbPersonnes;
+      }
+
+      if (updateReservationPayload.commentairesSpecial !== undefined) {
+        reservation.commentairesSpecial = updateReservationPayload.commentairesSpecial;
+      }
+
       await this.reservationRepository.save(reservation);
       this.logger.log(`Réservation mise à jour avec succès: ${id}`);
 
@@ -269,6 +339,8 @@ export class ReservationService {
         .leftJoinAndSelect('reservation.chambre', 'chambre')
         .leftJoinAndSelect('reservation.transport', 'transport')
         .leftJoinAndSelect('reservation.packVoyage', 'packVoyage')
+        .leftJoinAndSelect('reservation.restaurant', 'restaurant')
+        .leftJoinAndSelect('reservation.guide', 'guide')
         .where('touristeUser.id = :userId', { userId });
 
       const [reservations, total] = await queryBuilder

@@ -35,6 +35,12 @@ export abstract class Prestataire {
   @Column()
   localisation: string;
 
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ type: 'int', default: 0 })
+  nombreAvis: number;
+
   @Column({ name: 'category', type: 'enum', enum: PRESTATAIRE_CATEGORIES, default: null })
   category: string | null;
 

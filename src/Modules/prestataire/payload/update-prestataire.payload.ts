@@ -16,4 +16,12 @@ export class UpdatePrestatairePayload {
   @IsString({ message: 'La localisation doit être une chaîne de caractères.' })
   @IsOptional()
   localisation?: string;
+
+  @IsString({ message: 'La description doit être une chaîne de caractères.' })
+  @IsOptional()
+  description?: string;
+
+  @IsString({ message: 'La catégorie doit être une chaîne de caractères.' })
+  @IsOptional()
+  category?: string;
 }

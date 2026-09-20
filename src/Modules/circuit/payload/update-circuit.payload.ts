@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class UpdateCircuitPayload {
   @IsString({ message: 'Le titre doit être une chaîne de caractères.' })
@@ -14,4 +14,8 @@ export class UpdateCircuitPayload {
   @IsPositive({ message: 'La durée en jours doit être positive.' })
   @IsOptional()
   dureeJours?: number;
+
+  @IsArray({ message: 'Les étapes doivent être un tableau.' })
+  @IsOptional()
+  etapes?: string[];
 }

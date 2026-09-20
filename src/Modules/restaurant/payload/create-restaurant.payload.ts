@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateRestaurantPayload {
   @IsNotEmpty({ message: "L'ID prestataire est requis." })
@@ -9,7 +9,11 @@ export class CreateRestaurantPayload {
   @IsString({ message: 'Le type de cuisine doit être une chaîne de caractères.' })
   typeCuisin: string;
 
-  @IsNotEmpty({ message: 'L\'horaire est requis.' })
-  @IsString({ message: 'L\'horaire doit être une chaîne de caractères.' })
+  @IsNotEmpty({ message: "L'horaire est requis." })
+  @IsString({ message: "L'horaire doit être une chaîne de caractères." })
   horaire: string;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'La capacité de couverts doit être un nombre.' })
+  capaciteCouverts: number;
 }

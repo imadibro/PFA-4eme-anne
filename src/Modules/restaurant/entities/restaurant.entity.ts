@@ -15,4 +15,7 @@ export class Restaurant {
 
   @Column()
   horaire: string;
+
+  @Column({ default: 50 })
+  capaciteCouverts: number;
 }

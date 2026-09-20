@@ -6,10 +6,12 @@ export class RestaurantDto {
     this.prestataireId = restaurant.prestataire?.id;
     this.typeCuisin = restaurant.typeCuisin;
     this.horaire = restaurant.horaire;
+    this.capaciteCouverts = restaurant.capaciteCouverts;
   }
 
   id: string;
   prestataireId: string;
   typeCuisin: string;
   horaire: string;
+  capaciteCouverts: number;
 }

@@ -102,9 +102,12 @@ export class ChambreService {
       const newChambre = this.chambreRepository.create({
         hotel,
         numero: createChambrePayload.numero,
+        nom: createChambrePayload.nom,
         type: createChambrePayload.type,
+        capacite: createChambrePayload.capacite,
         prixNuit: createChambrePayload.prixNuit,
-        estDisponible: createChambrePayload.estDisponible ?? true
+        estActifPourReservation: createChambrePayload.estActifPourReservation ?? true,
+        photos: createChambrePayload.photos
       });
 
       const savedChambre = await this.chambreRepository.save(newChambre);
@@ -146,16 +149,28 @@ export class ChambreService {
         chambre.numero = updateChambrePayload.numero;
       }
 
+      if (updateChambrePayload.nom !== undefined) {
+        chambre.nom = updateChambrePayload.nom;
+      }
+
       if (updateChambrePayload.type !== undefined) {
         chambre.type = updateChambrePayload.type;
+      }
+
+      if (updateChambrePayload.capacite !== undefined) {
+        chambre.capacite = updateChambrePayload.capacite;
       }
 
       if (updateChambrePayload.prixNuit !== undefined) {
         chambre.prixNuit = updateChambrePayload.prixNuit;
       }
 
-      if (updateChambrePayload.estDisponible !== undefined) {
-        chambre.estDisponible = updateChambrePayload.estDisponible;
+      if (updateChambrePayload.estActifPourReservation !== undefined) {
+        chambre.estActifPourReservation = updateChambrePayload.estActifPourReservation;
+      }
+
+      if (updateChambrePayload.photos !== undefined) {
+        chambre.photos = updateChambrePayload.photos;
       }
 
       const updatedChambre = await this.chambreRepository.save(chambre);

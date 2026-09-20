@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Touriste } from '../../touriste/entities/touriste.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Prestataire } from '../../prestataire/entities/prestataire.entity';
+import { Touriste } from '../../touriste/entities/touriste.entity';
 
 @Entity()
 export class Avis {
@@ -16,9 +16,9 @@ export class Avis {
   @Column({ type: 'date' })
   dateAvis: Date;
 
-  @ManyToOne(() => Touriste, (touriste) => touriste.avis)
+  @ManyToOne(() => Touriste, t => t.avis, { onDelete: 'CASCADE' })
   touriste: Touriste;
 
-  @ManyToOne(() => Prestataire, (prestataire) => prestataire.avis)
+  @ManyToOne(() => Prestataire, p => p.avis, { onDelete: 'CASCADE' })
   prestataire: Prestataire;
 }
