@@ -1,4 +1,5 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsArray, IsIn, IsOptional, IsString } from 'class-validator';
+import { PRESTATAIRE_CATEGORIES } from 'src/common';
 
 export class UpdatePrestatairePayload {
   @IsString({ message: "Le nom de l'entreprise doit être une chaîne de caractères." })
@@ -21,7 +22,11 @@ export class UpdatePrestatairePayload {
   @IsOptional()
   description?: string;
 
-  @IsString({ message: 'La catégorie doit être une chaîne de caractères.' })
+  @IsArray({ message: 'Les catégories doivent être un tableau.' })
+  @IsIn(Object.values(PRESTATAIRE_CATEGORIES), {
+    each: true,
+    message: 'Chaque catégorie doit être valide (hotel, restaurant, guide, transport, agence_voyage).'
+  })
   @IsOptional()
-  category?: string;
+  categories?: string[];
 }

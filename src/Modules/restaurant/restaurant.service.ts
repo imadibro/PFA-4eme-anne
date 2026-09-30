@@ -81,14 +81,6 @@ export class RestaurantService {
         throw new NotFoundException(`Prestataire avec l'ID ${createRestaurantPayload.prestataireId} non trouvé`);
       }
 
-      const existingRestaurant = await this.restaurantRepository.findOne({
-        where: { prestataire: { id: createRestaurantPayload.prestataireId } }
-      });
-
-      if (existingRestaurant) {
-        throw new BadRequestException('Un restaurant existe déjà pour ce prestataire');
-      }
-
       const newRestaurant = this.restaurantRepository.create({
         prestataire,
         typeCuisin: createRestaurantPayload.typeCuisin,

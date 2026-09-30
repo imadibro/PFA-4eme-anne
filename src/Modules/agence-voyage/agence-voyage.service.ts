@@ -85,14 +85,6 @@ export class AgenceVoyageService {
         throw new NotFoundException(`Prestataire avec l'ID ${createAgenceVoyagePayload.prestataireId} non trouvé`);
       }
 
-      const existingAgence = await this.agenceVoyageRepository.findOne({
-        where: { prestataire: { id: createAgenceVoyagePayload.prestataireId } }
-      });
-
-      if (existingAgence) {
-        throw new BadRequestException('Une agence de voyage existe déjà pour ce prestataire');
-      }
-
       const newAgence = this.agenceVoyageRepository.create({
         prestataire,
         numLicence: createAgenceVoyagePayload.numLicence

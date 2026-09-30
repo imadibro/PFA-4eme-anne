@@ -1,15 +1,17 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
 
-export const ALLOWED_ORIGINS = [
-	'http://localhost:3000',
-];
+export const ALLOWED_ORIGINS = ['http://localhost:3000'];
 
 async function bootstrap() {
-  	const logger = new Logger('Main');
+  const logger = new Logger('Main');
   const app = await NestFactory.create(AppModule);
+
+  app.use(json({ limit: '10mb' }));
+  app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -17,21 +19,21 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
       transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
+        enableImplicitConversion: true
+      }
+    })
   );
 
   app.enableCors({
     allowedHeaders: ['Content-Type', 'Authorization', 'cookie'],
     origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    credentials: true,
+    credentials: true
   });
 
-  	const config: ConfigService = app.get(ConfigService);
+  const config: ConfigService = app.get(ConfigService);
   app.setGlobalPrefix('api');
-  const port:number = config.get<number>('PORT') || 3000;
+  const port: number = config.get<number>('PORT') || 3000;
   await app.listen(port);
   logger.log(`Server running on port ${port}`);
 }

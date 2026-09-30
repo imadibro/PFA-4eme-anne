@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Chambre } from '../../chambre/entities/chambre.entity';
 import { Prestataire } from '../../prestataire/entities/prestataire.entity';
 
@@ -7,7 +7,7 @@ export class Hotel {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => Prestataire, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Prestataire, p => p.hotels, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'prestataire_id' })
   prestataire: Prestataire;
 

@@ -1,4 +1,3 @@
-import { PRESTATAIRE_CATEGORIES } from 'src/common';
 import { CURRENT_TIMESTAMP } from 'src/common/constants/constant';
 import {
   Column,
@@ -10,8 +9,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import { AgenceVoyage } from '../../agence-voyage/entities/agence-voyage.entity';
 import { Avis } from '../../avis/entities/avis.entity';
+import { Guide } from '../../guide/entities/guide.entity';
+import { Hotel } from '../../hotel/entities/hotel.entity';
 import { Reservation } from '../../reservation/entities/reservation.entity';
+import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 import { User } from '../../user/entities/user.entity';
 
 @Entity('prestataires')
@@ -41,8 +44,20 @@ export abstract class Prestataire {
   @Column({ type: 'int', default: 0 })
   nombreAvis: number;
 
-  @Column({ name: 'category', type: 'enum', enum: PRESTATAIRE_CATEGORIES, default: null })
-  category: string | null;
+  @Column('simple-array', { name: 'categories', nullable: true })
+  categories: string[];
+
+  @OneToMany(() => Hotel, h => h.prestataire)
+  hotels: Hotel[];
+
+  @OneToMany(() => Restaurant, r => r.prestataire)
+  restaurants: Restaurant[];
+
+  @OneToMany(() => Guide, g => g.prestataire)
+  guides: Guide[];
+
+  @OneToMany(() => AgenceVoyage, a => a.prestataire)
+  agences: AgenceVoyage[];
 
   @OneToMany(() => Avis, avis => avis.prestataire)
   avis: Avis[];

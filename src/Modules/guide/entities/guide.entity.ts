@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Prestataire } from '../../prestataire/entities/prestataire.entity';
 
 // guide.entity.ts
@@ -7,7 +7,7 @@ export class Guide {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => Prestataire, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Prestataire, p => p.guides, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'prestataire_id' })
   prestataire: Prestataire;
 

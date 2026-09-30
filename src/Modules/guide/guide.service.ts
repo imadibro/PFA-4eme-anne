@@ -80,14 +80,6 @@ export class GuideService {
         throw new NotFoundException(`Prestataire avec l'ID ${createGuidePayload.prestataireId} non trouvé`);
       }
 
-      const existingGuide = await this.guideRepository.findOne({
-        where: { prestataire: { id: createGuidePayload.prestataireId } }
-      });
-
-      if (existingGuide) {
-        throw new BadRequestException('Un guide existe déjà pour ce prestataire');
-      }
-
       const newGuide = this.guideRepository.create({
         prestataire,
         listLangues: createGuidePayload.listLangues,

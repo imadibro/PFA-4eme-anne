@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsIn, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { PRESTATAIRE_CATEGORIES } from 'src/common';
 
 export class CreatePrestatairePayload {
   @IsNotEmpty({ message: "L'ID utilisateur est requis." })
@@ -21,9 +22,14 @@ export class CreatePrestatairePayload {
   @IsString({ message: 'La localisation doit être une chaîne de caractères.' })
   localisation: string;
 
-  @IsNotEmpty({ message: 'La catégorie est requise.' })
-  @IsString({ message: 'La catégorie doit être une chaîne de caractères.' })
-  category: string;
+  @IsNotEmpty({ message: 'Les catégories sont requises.' })
+  @IsArray({ message: 'Les catégories doivent être un tableau.' })
+  @ArrayNotEmpty({ message: 'Au moins une catégorie est requise.' })
+  @IsIn(Object.values(PRESTATAIRE_CATEGORIES), {
+    each: true,
+    message: 'Chaque catégorie doit être valide (hotel, restaurant, guide, transport, agence_voyage).'
+  })
+  categories: string[];
 
   @IsString({ message: 'La description doit être une chaîne de caractères.' })
   @IsOptional()

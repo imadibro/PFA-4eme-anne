@@ -93,7 +93,7 @@ export class PrestataireService {
         adress: createPrestatairePayload.adress,
         ville: createPrestatairePayload.ville,
         localisation: createPrestatairePayload.localisation,
-        category: createPrestatairePayload.category,
+        categories: createPrestatairePayload.categories,
         description: createPrestatairePayload.description
       });
 
@@ -141,8 +141,8 @@ export class PrestataireService {
         prestataire.description = updatePrestatairePayload.description;
       }
 
-      if (updatePrestatairePayload.category !== undefined) {
-        prestataire.category = updatePrestatairePayload.category;
+      if (updatePrestatairePayload.categories !== undefined) {
+        prestataire.categories = updatePrestatairePayload.categories;
       }
 
       const updatedPrestataire = await this.prestataireRepository.save(prestataire);

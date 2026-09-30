@@ -3,41 +3,41 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-vali
 export class RegisterPayload {
   @IsNotEmpty({ message: 'Le prénom est requis.' })
   @IsString({ message: 'Le prénom doit être une chaîne de caractères.' })
-  firstName!: string;
+  firstName: string;
 
   @IsNotEmpty({ message: 'Le nom de famille est requis.' })
   @IsString({
     message: 'Le nom de famille doit être une chaîne de caractères.'
   })
-  lastName!: string;
+  lastName: string;
 
   @IsNotEmpty({ message: "L'email est requis." })
   @IsEmail({}, { message: "L'adresse e-mail n'est pas valide." })
-  email!: string;
+  email: string;
 
   @IsNotEmpty({ message: "Le nom d'utilisateur est requis." })
   @IsString({
     message: "Le nom d'utilisateur doit être une chaîne de caractères."
   })
-  username!: string;
+  username: string;
 
   @IsNotEmpty({ message: 'Le mot de passe est requis.' })
   @IsString({ message: 'Le mot de passe doit être une chaîne de caractères.' })
   @MinLength(6, {
     message: 'Le mot de passe doit contenir au moins 6 caractères.'
   })
-  password!: string;
+  password: string;
 
   @IsNotEmpty()
   @IsString()
   @MinLength(10, {
     message: 'Le numéro de téléphone doit contenir au moins 10 caractères.'
   })
-  phone!: string;
+  phone: string;
 
   @IsNotEmpty({ message: 'Le genre est requis.' })
   @IsString({ message: 'Le genre doit être une chaîne de caractères.' })
-  gender!: string;
+  gender: string;
 
   @IsString({ message: "L'image de profil doit être une chaîne de caractères." })
   @IsOptional()
@@ -51,9 +51,9 @@ export class RegisterPayload {
 export class LoginPayload {
   @IsNotEmpty({ message: "Le nom d'utilisateur ou l'email est requis." })
   @IsString({ message: "Le nom d'utilisateur ou l'email doit être une chaîne de caractères." })
-  usernameOrEmail!: string;
+  usernameOrEmail: string;
 
   @IsString({ message: 'Le mot de passe doit être une chaîne de caractères.' })
   @IsNotEmpty({ message: 'Le mot de passe est requis.' })
-  password!: string;
+  password: string;
 }

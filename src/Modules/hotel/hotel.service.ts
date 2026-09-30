@@ -80,14 +80,6 @@ export class HotelService {
         throw new NotFoundException(`Prestataire avec l'ID ${createHotelPayload.prestataireId} non trouvé`);
       }
 
-      const existingHotel = await this.hotelRepository.findOne({
-        where: { prestataire: { id: createHotelPayload.prestataireId } }
-      });
-
-      if (existingHotel) {
-        throw new BadRequestException('Un hôtel existe déjà pour ce prestataire');
-      }
-
       const newHotel = this.hotelRepository.create({
         prestataire,
         nbrEtoiles: createHotelPayload.nbrEtoiles,

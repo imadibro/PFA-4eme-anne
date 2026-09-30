@@ -18,6 +18,7 @@ import { RestaurantModule } from './Modules/restaurant/restaurant.module';
 import { TouristeModule } from './Modules/touriste/touriste.module';
 import { TransportModule } from './Modules/transport/transport.module';
 import { UserModule } from './Modules/user/user.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -52,7 +53,8 @@ import { UserModule } from './Modules/user/user.module';
     AgenceVoyageModule,
     PackVoyageModule,
     TransportModule,
-    CircuitModule
+    CircuitModule,
+    UploadsModule
   ],
   controllers: [],
   providers: [

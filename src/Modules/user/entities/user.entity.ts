@@ -49,7 +49,7 @@ export abstract class User {
   isAccountVerified: boolean;
 
   // --- Ajouts pour l'application de voyage (Préférences & Fidélité) ---
-  @Column({ name: 'preferred_currency', length: 5, default: 'GBP' })
+  @Column({ name: 'preferred_currency', length: 5, default: 'MAD' })
   preferredCurrency: string; // 'GBP' | 'USD' | 'EUR'
 
   @Column({ name: 'notifications_enabled', default: true })

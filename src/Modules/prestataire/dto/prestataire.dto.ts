@@ -11,7 +11,7 @@ export class PrestataireDto {
     this.localisation = prestataire.localisation;
     this.description = prestataire.description;
     this.nombreAvis = prestataire.nombreAvis;
-    this.category = prestataire.category;
+    this.categories = prestataire.categories;
   }
 
   id: string;
@@ -22,5 +22,5 @@ export class PrestataireDto {
   localisation: string;
   description: string;
   nombreAvis: number;
-  category: string | null;
+  categories: string[];
 }
