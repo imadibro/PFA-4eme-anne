@@ -17,10 +17,11 @@ import type { Request, Response } from 'express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
 import { Public } from '../../common/guards/public-route.decorator.js';
-import type { JWTPayloadType } from '../../common/type/type.js';
+import type { AccessTokenType, JWTPayloadType } from '../../common/type/type.js';
 import { imageStorageOptions } from '../../uploads/multer-options';
 import { AuthService } from './auth.service.js';
-import { LoginPayload, RegisterPayload } from './payload/register-payload.js';
+import { CompleteRegistrationPayload } from './payload/complete-registration.payload.js';
+import { LoginPayload } from './payload/register-payload.js';
 
 @Controller('auth')
 export class AuthController {
@@ -28,22 +29,19 @@ export class AuthController {
 
   constructor(private readonly authService: AuthService) {}
 
-  // @Post('register')
-  // @Public()
-  // @HttpCode(HttpStatus.OK)
-  // async register(@Body() registerPayload: RegisterPayload): Promise<{ accessToken: string }> {
-  //   return this.authService.register(registerPayload);
-  // }
-
   @Post('register')
   @Public()
+  @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('profileImage', imageStorageOptions('profiles')))
-  async register(@Body() dto: RegisterPayload, @UploadedFile() file?: Express.Multer.File) {
-    this.logger.log('Registering user with file:', file);
-
-    if (file) dto.profileImage = `/api/uploads/profiles/${file.filename}`;
-    this.logger.log('body', dto);
-    return this.authService.register(dto);
+  async completeRegistration(
+    @Body() payload: CompleteRegistrationPayload,
+    @UploadedFile() file?: Express.Multer.File
+  ): Promise<AccessTokenType> {
+    if (file) {
+      payload.userInfo.profileImage = `/api/uploads/profiles/${file.filename}`;
+    }
+    this.logger.log('Complete registration with payload:', payload);
+    return this.authService.completeRegistration(payload);
   }
 
   @Post('login')

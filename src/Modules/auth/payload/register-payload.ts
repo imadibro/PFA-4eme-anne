@@ -42,10 +42,6 @@ export class RegisterPayload {
   @IsString({ message: "L'image de profil doit être une chaîne de caractères." })
   @IsOptional()
   profileImage?: string;
-
-  @IsString({ message: "Le rôle de l'utilisateur doit être une chaîne de caractères." })
-  @IsOptional()
-  userRole?: string;
 }
 
 export class LoginPayload {

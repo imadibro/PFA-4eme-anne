@@ -21,7 +21,7 @@ export abstract class User {
   @Column({ name: 'username', length: 100, unique: true, nullable: false })
   username: string;
 
-  @Column({ name: 'password', length: 255, nullable: false, select: false })
+  @Column({ name: 'password', length: 255, nullable: false })
   password: string;
 
   @Column({ name: 'phone', length: 20, nullable: false })
@@ -30,7 +30,7 @@ export abstract class User {
   @Column({ name: 'user_role', type: 'enum', enum: UserRole, default: UserRole.TOURISTE })
   userRole: UserRole;
 
-  @Column({ name: 'refresh_token', type: 'varchar', nullable: true, select: false })
+  @Column({ name: 'refresh_token', type: 'varchar', nullable: true })
   refreshToken: string | null;
 
   @Column({ name: 'session_token', type: 'varchar', nullable: true })

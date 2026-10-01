@@ -3,10 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
-import { JWTPayloadType } from '../../common/type/type.js';
+import { DataSource, Repository } from 'typeorm';
+import { UserRole } from '../../common/enums/role.enum.js';
+import { AccessTokenType, JWTPayloadType } from '../../common/type/type.js';
 import { User } from '../user/entities/user.entity.js';
-import { LoginPayload, RegisterPayload } from './payload/register-payload.js';
+import { CompleteRegistrationPayload } from './payload/complete-registration.payload.js';
+import { LoginPayload } from './payload/register-payload.js';
 
 @Injectable()
 export class AuthService {
@@ -15,58 +17,111 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly dataSource: DataSource
   ) {}
 
-  async register(registerDto: RegisterPayload): Promise<{ accessToken: string }> {
-    const existingUserByEmail = await this.userRepository.findOneBy({ email: registerDto.email });
+  async completeRegistration(payload: CompleteRegistrationPayload): Promise<AccessTokenType> {
+    return this.dataSource.transaction(async manager => {
+      // 0. Validation : au moins touristeInfo OU prestataireInfo doit être fourni
+      if (!payload.touristeInfo && !payload.prestataireInfo) {
+        throw new BadRequestException(
+          'Vous devez fournir soit les informations touriste, soit les informations prestataire'
+        );
+      }
 
-    if (existingUserByEmail) {
-      throw new BadRequestException('Un utilisateur avec cet email existe déjà');
-    }
+      if (payload.touristeInfo && payload.prestataireInfo) {
+        throw new BadRequestException('Vous ne pouvez pas être à la fois touriste et prestataire');
+      }
 
-    const existingUserByUsername = await this.userRepository.findOneBy({ username: registerDto.username });
+      // Déduire le rôle automatiquement selon les données fournies
+      const isTouriste = !!payload.touristeInfo;
+      const userRole = isTouriste ? UserRole.TOURISTE : UserRole.PRESTATAIRE;
+      const isAccountVerified = isTouriste; // Touriste vérifié automatiquement, Prestataire nécessite validation admin
 
-    if (existingUserByUsername) {
-      throw new BadRequestException("Un utilisateur avec ce nom d'utilisateur existe déjà");
-    }
+      // 1. Créer l'utilisateur
+      const existingUserByEmail = await manager.findOne(User, { where: { email: payload.userInfo.email } });
+      if (existingUserByEmail) {
+        throw new BadRequestException('Un utilisateur avec cet email existe déjà');
+      }
 
-    const hashedPassword = await this.hashPassword(registerDto.password);
-    const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${registerDto.username}`;
-    const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${registerDto.username}`;
+      const existingUserByUsername = await manager.findOne(User, {
+        where: { username: payload.userInfo.username }
+      });
+      if (existingUserByUsername) {
+        throw new BadRequestException("Un utilisateur avec ce nom d'utilisateur existe déjà");
+      }
 
-    const defaultProfileImage = registerDto.gender === 'male' ? boyProfilePic : girlProfilePic;
-    const userRole = registerDto.userRole || 'TOURISTE';
-    const isAccountVerified = userRole === 'TOURISTE' || userRole === 'ADMIN' ? true : false;
+      const hashedPassword = await this.hashPassword(payload.userInfo.password);
+      const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${payload.userInfo.username}`;
+      const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${payload.userInfo.username}`;
+      const defaultProfileImage = payload.userInfo.gender === 'male' ? boyProfilePic : girlProfilePic;
 
-    const newUser = this.userRepository.create({
-      firstName: registerDto.firstName,
-      lastName: registerDto.lastName,
-      gender: registerDto.gender,
-      phone: registerDto.phone,
-      email: registerDto.email,
-      password: hashedPassword,
-      username: registerDto.username,
-      profileImage: registerDto.profileImage || defaultProfileImage,
-      isActive: true,
-      isAccountVerified: isAccountVerified,
-      userRole: userRole as any
+      const newUser = manager.create(User, {
+        firstName: payload.userInfo.firstName,
+        lastName: payload.userInfo.lastName,
+        gender: payload.userInfo.gender,
+        phone: payload.userInfo.phone,
+        email: payload.userInfo.email,
+        password: hashedPassword,
+        username: payload.userInfo.username,
+        profileImage: payload.userInfo.profileImage || defaultProfileImage,
+        isActive: true,
+        isAccountVerified: isAccountVerified,
+        userRole: userRole as any
+      });
+
+      const savedUser = await manager.save(User, newUser);
+      this.logger.log(`Nouvel utilisateur créé avec succès: ${savedUser.username}`);
+
+      const sessionToken = this.generateSessionToken();
+      await manager.update(User, savedUser.id, { sessionToken });
+
+      let result: any = { user: savedUser };
+
+      // 2. Créer le profil selon le type (déduit automatiquement)
+      if (isTouriste && payload.touristeInfo) {
+        // TOURISTE
+        const touristeRepository = manager.getRepository('Touriste');
+        const newTouriste = touristeRepository.create({
+          user: savedUser,
+          nationality: payload.touristeInfo.nationality,
+          dateNaissance: new Date(payload.touristeInfo.dateNaissance)
+        });
+
+        const savedTouriste = await touristeRepository.save(newTouriste);
+        this.logger.log(`Nouveau touriste créé avec succès: ${savedTouriste.id}`);
+        result.touriste = savedTouriste;
+      } else if (payload.prestataireInfo) {
+        // PRESTATAIRE
+        const prestataireRepository = manager.getRepository('Prestataire');
+        const newPrestataire = prestataireRepository.create({
+          user: savedUser,
+          nomEntreprise: payload.prestataireInfo.nomEntreprise,
+          adress: payload.prestataireInfo.adress,
+          ville: payload.prestataireInfo.ville,
+          localisation: payload.prestataireInfo.localisation,
+          categories: payload.prestataireInfo.categories,
+          description: payload.prestataireInfo.description
+        });
+
+        const savedPrestataire = await prestataireRepository.save(newPrestataire);
+        this.logger.log(`Nouveau prestataire créé avec succès: ${savedPrestataire.id}`);
+        result.prestataire = savedPrestataire;
+      }
+
+      // 4. Générer le token JWT
+      const jwtPayload: JWTPayloadType = {
+        id: savedUser.id,
+        username: savedUser.username,
+        userRole: savedUser.userRole,
+        sessionToken
+      };
+      const accessToken = await this.generateJwt(jwtPayload);
+      result.accessToken = accessToken;
+
+      return { accessToken };
     });
-
-    const savedUser = await this.userRepository.save(newUser);
-    this.logger.log(`Nouvel utilisateur créé avec succès: ${savedUser.username}`);
-
-    const sessionToken = this.generateSessionToken();
-    await this.userRepository.update(savedUser.id, { sessionToken });
-
-    const payload: JWTPayloadType = {
-      id: savedUser.id,
-      username: savedUser.username,
-      userRole: savedUser.userRole,
-      sessionToken
-    };
-    const accessToken = await this.generateJwt(payload);
-    return { accessToken };
   }
 
   async login(loginPayload: LoginPayload): Promise<{ accessToken: string; refreshToken: string }> {
